@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dog-Legged Staircase Designer — BY Er. Shankar Bhujel</title>
+<style>
+:root{
+  --bg:#fff;--surface:#f5f5f5;--surface2:#e8e8e8;--border:#bdbdbd;
+  --border-dark:#9e9e9e;--accent:#1565C0;--output:#2E7D32;
+  --text:#212121;--muted:#616161;--header-bg:#1565C0;--header-text:#fff;
+  --row-alt:#f9f9f9;--warn:#b71c1c;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text);font-size:14px;}
+
+.site-header{background:var(--header-bg);color:var(--header-text);padding:.6rem 1.5rem;}
+.header-inner{max-width:1300px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;}
+.header-by{font-size:1rem;font-weight:bold;letter-spacing:.03em;}
+.header-tool-name{font-size:.82rem;opacity:.85;}
+
+.main-nav{background:var(--surface);border-bottom:1px solid var(--border);padding:.45rem 1.5rem;font-size:.82rem;}
+.main-nav a{color:var(--accent);text-decoration:none;margin-right:1.5rem;}
+.main-nav a:hover{text-decoration:underline;}
+
+.page-title{max-width:1300px;margin:1rem auto .75rem;padding:0 1.5rem .6rem;border-bottom:2px solid var(--accent);}
+.page-title h1{font-size:1.25rem;color:var(--accent);margin-bottom:.2rem;}
+.page-title p{font-size:.82rem;color:var(--muted);}
+
+.wrapper{max-width:1300px;margin:0 auto;padding:0 1.5rem 2rem;}
+.main-grid{display:grid;grid-template-columns:430px 1fr;gap:1.5rem;align-items:start;}
+@media(max-width:1000px){.main-grid{grid-template-columns:1fr;}}
+
+/* ── Unit toggle bar ── */
+.unit-bar{display:flex;align-items:center;gap:.5rem;background:var(--surface2);
+  border:1px solid var(--border);padding:.45rem .75rem;margin-top:.75rem;}
+.unit-bar label{font-size:.8rem;font-weight:bold;color:var(--text);margin-right:.25rem;}
+.unit-toggle{display:flex;border:1px solid var(--border-dark);overflow:hidden;}
+.unit-toggle button{border:none;padding:.3rem .85rem;font-size:.8rem;font-family:Arial,sans-serif;
+  cursor:pointer;background:var(--bg);color:var(--muted);}
+.unit-toggle button.active{background:var(--accent);color:#fff;font-weight:bold;}
+.unit-note{font-size:.72rem;color:var(--muted);margin-left:.5rem;}
+
+.section-label{font-size:.72rem;font-weight:bold;color:var(--header-bg);text-transform:uppercase;
+  letter-spacing:.07em;background:var(--surface2);border:1px solid var(--border);border-bottom:none;
+  padding:.3rem .75rem;display:block;margin-top:1rem;}
+
+table{width:100%;border-collapse:collapse;font-size:.88rem;}
+table th{background:var(--accent);color:#fff;text-align:left;padding:.4rem .75rem;
+  font-size:.75rem;letter-spacing:.04em;font-weight:bold;border:1px solid #0d47a1;}
+table td{border:1px solid var(--border);padding:.28rem .5rem;background:var(--bg);vertical-align:middle;}
+table tr:nth-child(even) td{background:var(--row-alt);}
+.param-label{width:44%;font-weight:500;font-size:.85rem;}
+.param-input{width:36%;}
+.param-unit{width:20%;color:var(--muted);font-size:.78rem;}
+
+/* Dual-input cell: mm input + ft-in input side by side */
+.dual-inp{display:flex;gap:3px;align-items:center;width:100%;}
+.dual-inp input{flex:1;min-width:0;}
+.dual-inp .sep{color:var(--muted);font-size:.8rem;flex-shrink:0;}
+.fi-wrap{display:flex;gap:2px;align-items:center;flex:1.4;min-width:0;}
+.fi-wrap input{min-width:0;}
+.fi-wrap span{font-size:.72rem;color:var(--muted);flex-shrink:0;}
+
+input[type="number"],select{width:100%;border:1px solid var(--border-dark);padding:.25rem .4rem;
+  font-family:Arial,sans-serif;font-size:.82rem;background:#fff;color:var(--text);outline:none;}
+input:focus,select:focus{border-color:var(--accent);outline:1px solid var(--accent);}
+input.invalid{border-color:var(--warn)!important;outline:1px solid var(--warn)!important;background:#fff5f5!important;}
+
+.range-hint{font-size:.68rem;color:var(--muted);margin-top:1px;}
+.range-fi  {font-size:.68rem;color:#888;margin-top:0;}
+
+.btn-row{margin:.75rem 0;display:flex;gap:.5rem;flex-wrap:wrap;}
+.calc-btn{background:var(--accent);color:#fff;border:none;padding:.45rem 1.6rem;font-size:.88rem;
+  font-family:Arial,sans-serif;cursor:pointer;font-weight:bold;}
+.calc-btn:hover{background:#0d47a1;}
+.reset-btn{background:var(--surface2);color:var(--text);border:1px solid var(--border-dark);
+  padding:.45rem 1.2rem;font-size:.88rem;font-family:Arial,sans-serif;cursor:pointer;}
+.reset-btn:hover{background:#ddd;}
+
+.output-table th{background:var(--surface2);color:var(--text);border:1px solid var(--border);}
+.res-mm{font-weight:bold;color:var(--output);font-family:'Courier New',monospace;font-size:.88rem;}
+.res-fi{font-size:.78rem;color:#1565C0;font-family:'Courier New',monospace;}
+.result-total{font-weight:bold;color:var(--warn);font-family:'Courier New',monospace;font-size:.96rem;}
+
+.formula-box{background:#fffde7;border:1px solid #f9a825;padding:.6rem 1rem;font-size:.8rem;
+  font-family:'Courier New',monospace;color:#5d4037;line-height:1.7;}
+.formula-box strong{font-family:Arial,sans-serif;font-size:.78rem;}
+.note-box{background:#e8f5e9;border:1px solid #a5d6a7;padding:.55rem 1rem;font-size:.8rem;
+  color:#1b5e20;margin-top:.5rem;line-height:1.6;}
+.warn-box{background:#fff3e0;border:1px solid #ffb300;padding:.55rem 1rem;font-size:.8rem;
+  color:#7b3f00;margin-top:.5rem;line-height:1.6;}
+.error-box{background:#ffebee;border:1px solid #ef9a9a;padding:.55rem 1rem;font-size:.8rem;
+  color:var(--warn);margin-top:.5rem;line-height:1.6;font-weight:bold;}
+
+.drawing-panel{position:sticky;top:10px;}
+.canvas-wrap{background:#f8f8f8;border:2px solid #ccc;padding:.8rem;border-radius:2px;overflow-x:auto;}
+.canvas-title{font-size:.8rem;font-weight:bold;color:#1565C0;text-transform:uppercase;
+  letter-spacing:.08em;margin-bottom:.5rem;font-family:Arial,sans-serif;
+  display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;}
+.badge{background:#1565C0;color:#fff;font-size:.65rem;padding:.1rem .4rem;border-radius:2px;letter-spacing:.05em;}
+.badge.green{background:#2e7d32;}
+canvas{display:block;background:#fff;width:100%;border:1px solid #ccc;image-rendering:crisp-edges;}
+
+.legend-wrap{background:#f5f5f5;border:1px solid #ddd;padding:.6rem .8rem;margin-top:.6rem;
+  display:flex;flex-wrap:wrap;gap:.4rem .8rem;align-items:center;}
+.legend-item{display:flex;align-items:center;gap:.3rem;font-size:.73rem;font-family:Arial,sans-serif;}
+.leg-sw{width:13px;height:9px;border:1px solid rgba(0,0,0,.15);}
+.legend-title{color:#555;font-size:.68rem;font-weight:bold;text-transform:uppercase;letter-spacing:.06em;width:100%;}
+
+.compliance-row-ok td{background:#f1f8e9!important;}
+.compliance-row-warn td{background:#fff8e1!important;}
+.compliance-row-fail td{background:#ffebee!important;}
+.comp-ok{color:#2e7d32;font-weight:bold;}
+.comp-warn{color:#e65100;font-weight:bold;}
+.comp-fail{color:#b71c1c;font-weight:bold;}
+
+.site-footer{max-width:1300px;margin:2rem auto 0;padding:.75rem 1.5rem;
+  border-top:1px solid var(--border);font-size:.76rem;color:var(--muted);}
+.site-footer a{color:var(--accent);text-decoration:none;}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <span class="header-by">BY Er. Shankar Bhujel</span>
+    <span class="header-tool-name">Dog-Legged Staircase Designer — NBC 205 · mm &amp; Feet-Inch</span>
+  </div>
+</header>
+<nav class="main-nav">
+  <a href="../index.html">← Portfolio</a>
+  <a href="index.html">Tools Index</a>
+</nav>
+<div class="page-title">
+  <h1>Dog-Legged Staircase Designer (Symmetrical · 180° Turn)</h1>
+  <p>Design &amp; plan view · Nepal NBC 205 compliant · Input &amp; results in <strong>mm</strong> and <strong>Feet–Inches</strong> simultaneously</p>
+</div>
+
+<div class="wrapper">
+<div class="main-grid">
+
+<!-- ══════════ LEFT PANEL ══════════ -->
+<div>
+
+  <!-- Unit mode toggle -->
+  <div class="unit-bar">
+    <label>Input Mode:</label>
+    <div class="unit-toggle">
+      <button id="btnMM"  class="active" onclick="setMode('mm')">mm</button>
+      <button id="btnFI"  onclick="setMode('fi')">Feet – Inch</button>
+    </div>
+    <span class="unit-note">Results always shown in both units</span>
+  </div>
+
+  <!-- ── SECTION 1 ── -->
+  <div class="section-label">1. Building &amp; Storey Parameters</div>
+  <table>
+    <thead><tr><th class="param-label">Parameter</th><th class="param-input">Value</th><th class="param-unit">Unit</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="param-label">Storey Height (Floor to Floor)</td>
+        <td class="param-input" id="cell_storeyH">
+          <input type="number" id="mm_storeyH" value="3000" min="1" step="50" oninput="mmChanged('storeyH')">
+          <div class="range-hint" id="hint_storeyH">NBC: 2700–4500 mm</div>
+          <div class="range-fi"  id="hfi_storeyH">NBC: 8′-10″ – 14′-9″</div>
+        </td>
+        <td class="param-unit" id="unit_storeyH">mm</td>
+      </tr>
+      <tr>
+        <td class="param-label">Slab + Floor Finish Thickness</td>
+        <td class="param-input" id="cell_slabThk">
+          <input type="number" id="mm_slabThk" value="150" min="1" step="10" oninput="mmChanged('slabThk')">
+          <div class="range-hint">Typical: 100–300 mm / 4″–12″</div>
+        </td>
+        <td class="param-unit" id="unit_slabThk">mm</td>
+      </tr>
+      <tr>
+        <td class="param-label">Occupancy Type</td>
+        <td class="param-input">
+          <select id="occ" onchange="updateHints();go();">
+            <option value="res">Residential</option>
+            <option value="pub">Public / Commercial</option>
+          </select>
+        </td>
+        <td class="param-unit">—</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ── SECTION 2 ── -->
+  <div class="section-label">2. Riser &amp; Tread</div>
+  <table>
+    <thead><tr><th class="param-label">Parameter</th><th class="param-input">Value</th><th class="param-unit">Unit</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="param-label">Desired Riser Height (R)</td>
+        <td class="param-input" id="cell_riser">
+          <input type="number" id="mm_riser" value="175" min="1" step="5" oninput="mmChanged('riser')">
+          <div class="range-hint" id="hint_riser">NBC Res: 100–175 mm</div>
+          <div class="range-fi"  id="hfi_riser">NBC Res: 4″–6″-11″</div>
+        </td>
+        <td class="param-unit" id="unit_riser">mm</td>
+      </tr>
+      <tr>
+        <td class="param-label">Tread Width (T)</td>
+        <td class="param-input" id="cell_tread">
+          <input type="number" id="mm_tread" value="270" min="1" step="5" oninput="mmChanged('tread')">
+          <div class="range-hint" id="hint_tread">NBC Res: 250–300 mm</div>
+          <div class="range-fi"  id="hfi_tread">NBC Res: 9⅞″–11⅞″</div>
+        </td>
+        <td class="param-unit" id="unit_tread">mm</td>
+      </tr>
+      <tr>
+        <td class="param-label">Nosing / Overhang</td>
+        <td class="param-input" id="cell_nosing">
+          <input type="number" id="mm_nosing" value="25" min="0" step="5" oninput="mmChanged('nosing')">
+          <div class="range-hint">0–40 mm / 0–1½″</div>
+        </td>
+        <td class="param-unit" id="unit_nosing">mm</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ── SECTION 3 ── -->
+  <div class="section-label">3. Width, Landing &amp; Headroom</div>
+  <table>
+    <thead><tr><th class="param-label">Parameter</th><th class="param-input">Value</th><th class="param-unit">Unit</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="param-label">Width of Each Flight (W)</td>
+        <td class="param-input" id="cell_flightW">
+          <input type="number" id="mm_flightW" value="1200" min="1" step="50" oninput="mmChanged('flightW')">
+          <div class="range-hint" id="hint_flightW">NBC Res: Min 1000 mm</div>
+          <div class="range-fi"  id="hfi_flightW">NBC Res: Min 3′-3″</div>
+        </td>
+        <td class="param-unit" id="unit_flightW">mm</td>
+      </tr>
+      <tr>
+        <td class="param-label">Mid-Landing Width (ML)</td>
+        <td class="param-input" id="cell_landW">
+          <input type="number" id="mm_landW" value="1200" min="1" step="50" oninput="mmChanged('landW')">
+          <div class="range-hint">Rec ≥ Flight Width</div>
+        </td>
+        <td class="param-unit" id="unit_landW">mm</td>
+      </tr>
+      <tr>
+        <td class="param-label">Mid-Wall / Newel Thickness</td>
+        <td class="param-input" id="cell_midWall">
+          <input type="number" id="mm_midWall" value="230" min="0" step="10" oninput="mmChanged('midWall')">
+          <div class="range-hint">Structural wall between flights</div>
+        </td>
+        <td class="param-unit" id="unit_midWall">mm</td>
+      </tr>
+      <tr>
+        <td class="param-label">Clear Headroom</td>
+        <td class="param-input" id="cell_headroom">
+          <input type="number" id="mm_headroom" value="2100" min="1" step="50" oninput="mmChanged('headroom')">
+          <div class="range-hint" id="hint_headroom">NBC Min: 2000 mm</div>
+          <div class="range-fi"  id="hfi_headroom">NBC Min: 6′-6½″</div>
+        </td>
+        <td class="param-unit" id="unit_headroom">mm</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="btn-row">
+    <button class="calc-btn" onclick="go()">Calculate &amp; Draw</button>
+    <button class="reset-btn" onclick="doReset()">Reset</button>
+  </div>
+
+  <div id="errBox" class="error-box" style="display:none;"></div>
+  <div id="wrnBox" class="warn-box"  style="display:none;"></div>
+
+  <!-- ── RESULTS ── -->
+  <div class="section-label">4. Design Results</div>
+  <table class="output-table">
+    <thead>
+      <tr>
+        <th style="width:46%">Parameter</th>
+        <th style="width:30%">Value (mm)</th>
+        <th style="width:24%">Value (ft–in)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="param-label">Net Rise</td>
+          <td class="res-mm" id="rNetRise_mm">—</td>
+          <td class="res-fi" id="rNetRise_fi">—</td></tr>
+      <tr><td class="param-label">Total Risers</td>
+          <td class="res-mm" id="rNR_mm">—</td>
+          <td class="res-fi" id="rNR_fi" style="color:var(--muted);font-size:.78rem;">nos.</td></tr>
+      <tr><td class="param-label">Risers per Flight</td>
+          <td class="res-mm" id="rRpF_mm">—</td>
+          <td class="res-fi" id="rRpF_fi" style="color:var(--muted);font-size:.78rem;">nos.</td></tr>
+      <tr><td class="param-label">Treads per Flight</td>
+          <td class="res-mm" id="rTpF_mm">—</td>
+          <td class="res-fi" id="rTpF_fi" style="color:var(--muted);font-size:.78rem;">nos.</td></tr>
+      <tr><td class="param-label">Actual Riser (R)</td>
+          <td class="res-mm" id="rActR_mm">—</td>
+          <td class="res-fi" id="rActR_fi">—</td></tr>
+      <tr><td class="param-label">Tread Width (T)</td>
+          <td class="res-mm" id="rT_mm">—</td>
+          <td class="res-fi" id="rT_fi">—</td></tr>
+      <tr><td class="param-label">2R+T Comfort Rule</td>
+          <td class="res-mm" id="rComfort_mm">—</td>
+          <td class="res-fi" id="rComfort_fi">—</td></tr>
+      <tr><td class="param-label">Going per Flight</td>
+          <td class="res-mm" id="rGoing_mm">—</td>
+          <td class="res-fi" id="rGoing_fi">—</td></tr>
+      <tr><td class="param-label">Pitch Angle</td>
+          <td class="res-mm" id="rAngle_mm">—</td>
+          <td class="res-fi" id="rAngle_fi" style="color:var(--muted);font-size:.78rem;">[25°–42°]</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-label">5. Staircase Well Dimensions</div>
+  <table class="output-table">
+    <thead>
+      <tr>
+        <th style="width:46%">Dimension</th>
+        <th style="width:30%">mm</th>
+        <th style="width:24%">ft – in</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="param-label">Well Width</td>
+          <td class="res-mm" id="rWW_mm">—</td>
+          <td class="res-fi" id="rWW_fi">—</td></tr>
+      <tr><td class="param-label">Well Length</td>
+          <td class="res-mm" id="rWL_mm">—</td>
+          <td class="res-fi" id="rWL_fi">—</td></tr>
+      <tr><td style="font-weight:bold;border:1px solid var(--border);padding:.28rem .5rem;">Block Area</td>
+          <td class="result-total" id="rArea_mm">—</td>
+          <td class="res-fi" id="rArea_fi">—</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-label">6. NBC 205 Compliance Check</div>
+  <table class="output-table">
+    <thead><tr><th>Parameter</th><th>Value</th><th>NBC Limit</th><th>Status</th></tr></thead>
+    <tbody id="compBody">
+      <tr><td colspan="4" style="text-align:center;color:var(--muted);padding:.5rem;">Press Calculate</td></tr>
+    </tbody>
+  </table>
+
+  <div style="margin-top:.5rem;">
+    <button onclick="toggleFml()" id="fmlBtn"
+      style="background:none;border:1px solid #f9a825;color:#5d4037;font-size:.78rem;
+      font-family:Arial,sans-serif;padding:.25rem .75rem;cursor:pointer;">▶ Show Formulas</button>
+    <div id="fmlBox" class="formula-box" style="display:none;margin-top:0;">
+      <strong>Formulas (NBC 205):</strong><br>
+      Net Rise = Storey Height − Slab Thickness<br>
+      No. Risers = Round(Net Rise ÷ R) → even number (symmetric)<br>
+      Actual R = Net Rise ÷ No. Risers<br>
+      2R + T = 600–640 mm  (comfort rule)<br>
+      Risers/flight = Total Risers ÷ 2<br>
+      Treads/flight = Risers/flight − 1<br>
+      Going = Treads/flight × T<br>
+      Well Width = 2×FlightW + MidWall<br>
+      Well Length = Going + Landing Width<br>
+      Pitch = atan(R ÷ T) × 180/π<br>
+      1 foot = 304.8 mm · 1 inch = 25.4 mm<br>
+    </div>
+  </div>
+
+  <div class="note-box" style="margin-top:.5rem;">
+    ℹ️ <strong>NBC 205:</strong> Residential — R ≤ 175 mm (6′′⅞), T ≥ 250 mm (9′′⅞), W ≥ 1000 mm (3′-3″), HR ≥ 2000 mm (6′-6½″).<br>
+    Public — R ≤ 150 mm (5′′⅞), T ≥ 270 mm (10′′⅝), W ≥ 1500 mm (4′-11″), HR ≥ 2200 mm (7′-2½″).<br>
+    Comfort rule 2R+T = 600–640 mm (23⅝″–25¼″) applies to all occupancies.
+  </div>
+</div><!-- end left -->
+
+<!-- ══════════ RIGHT PANEL ══════════ -->
+<div class="drawing-panel">
+  <div class="canvas-wrap">
+    <div class="canvas-title">
+      📐 Plan View — Dog-Legged Staircase
+      <span class="badge">NBC 205</span>
+      <span class="badge green" id="scaleLabel">Scale: —</span>
+      <span class="badge" id="unitBadge" style="background:#7b3f00;">mm</span>
+    </div>
+    <canvas id="planC" width="900" height="760" style="width:900px;height:760px;display:block;border:1px solid #ccc;background:#fff;"></canvas>
+  </div>
+  <div class="legend-wrap">
+    <div class="legend-title">Drawing Legend</div>
+    <div class="legend-item"><div class="leg-sw" style="background:rgba(200,220,255,.7);border-color:#2255aa;"></div><span>Flight 1 (UP)</span></div>
+    <div class="legend-item"><div class="leg-sw" style="background:rgba(255,220,195,.7);border-color:#aa3300;"></div><span>Flight 2 (DN)</span></div>
+    <div class="legend-item"><div class="leg-sw" style="background:rgba(255,248,190,.9);border-color:#888;"></div><span>Landing</span></div>
+    <div class="legend-item"><div class="leg-sw" style="background:rgba(170,170,170,.6);border-color:#666;"></div><span>Mid-Wall</span></div>
+    <div class="legend-item"><div class="leg-sw" style="background:#990000;"></div><span>Overall Dims</span></div>
+    <div class="legend-item"><div class="leg-sw" style="background:#1a4a9a;"></div><span>Sub-Dims (mm)</span></div>
+    <div class="legend-item"><div class="leg-sw" style="background:#1a4a9a;opacity:.6;"></div><span>ft-in values</span></div>
+    <div class="legend-item"><div class="leg-sw" style="background:#117733;"></div><span>UP Arrow</span></div>
+  </div>
+</div>
+
+</div><!-- main-grid -->
+</div><!-- wrapper -->
+
+<footer class="site-footer">
+  BY Er. Shankar Bhujel &nbsp;·&nbsp; Engineering Tools &nbsp;·&nbsp;
+  <a href="../index.html">← Back to Portfolio</a>
+</footer>
+
+<script>
+/* ═══════════════════════════════════════════════
+   UNIT CONVERSION UTILITIES
+   All internal computation in mm.
+   Display converts to feet-inch string where needed.
+═══════════════════════════════════════════════ */
+const MM_PER_INCH = 25.4;
+const MM_PER_FOOT = 304.8;
+
+// mm → feet-inch string  e.g.  "3′-6⅜″"
+function mmToFI(mm, showFrac=true){
+  if(isNaN(mm)||mm===null) return '—';
+  const totalInches = mm / MM_PER_INCH;
+  const feet = Math.floor(totalInches / 12);
+  const remInches = totalInches - feet*12;
+  const wholeIn = Math.floor(remInches);
+  const frac = remInches - wholeIn;
+
+  let fracStr = '';
+  if(showFrac){
+    // Round to nearest 1/16
+    const sixteenths = Math.round(frac * 16);
+    const fracs = ['','¹⁄₁₆','⅛','³⁄₁₆','¼','⁵⁄₁₆','⅜','⁷⁄₁₆','½','⁹⁄₁₆','⅝','¹¹⁄₁₆','¾','¹³⁄₁₆','⅞','¹⁵⁄₁₆'];
+    if(sixteenths===16){ /* carry */ }
+    else fracStr = fracs[sixteenths] || '';
+  }
+
+  // rebuild with carry
+  let wi = wholeIn + (showFrac && Math.round(frac*16)===16 ? 1 : 0);
+  let ft = feet;
+  if(wi===12){ wi=0; ft++; }
+
+  if(ft===0) return `${wi}${fracStr}″`;
+  if(wi===0 && !fracStr) return `${ft}′`;
+  return `${ft}′-${wi}${fracStr}″`;
+}
+
+// feet-inch inputs → mm
+function fiToMM(ft, inch){
+  return (parseFloat(ft)||0)*MM_PER_FOOT + (parseFloat(inch)||0)*MM_PER_INCH;
+}
+
+/* ═══════════════════════════════════════════════
+   INPUT MODE  (mm | fi)
+═══════════════════════════════════════════════ */
+let MODE = 'mm'; // 'mm' or 'fi'
+
+// All parameter keys that have dual inputs
+const PARAMS = ['storeyH','slabThk','riser','tread','nosing','flightW','landW','midWall','headroom'];
+
+// Default values in mm
+const DEFAULTS_MM = {
+  storeyH:3000, slabThk:150, riser:175, tread:270, nosing:25,
+  flightW:1200, landW:1200, midWall:230, headroom:2100
+};
+
+function setMode(m){
+  MODE = m;
+  document.getElementById('btnMM').classList.toggle('active', m==='mm');
+  document.getElementById('btnFI').classList.toggle('active', m==='fi');
+  document.getElementById('unitBadge').textContent = m==='mm' ? 'mm' : 'ft-in';
+
+  PARAMS.forEach(k => renderInputCell(k));
+  updateHints();
+  go();
+}
+
+// Render the input cell for a parameter in current mode
+function renderInputCell(k){
+  const cell = document.getElementById('cell_'+k);
+  const unitCell = document.getElementById('unit_'+k);
+  const mmVal = parseFloat(document.getElementById('mm_'+k).value) || DEFAULTS_MM[k];
+
+  if(MODE==='mm'){
+    // Show just mm input
+    const hintEl   = document.getElementById('hint_'+k);
+    const hfiEl    = document.getElementById('hfi_'+k);
+    // Reconstruct simple layout
+    cell.innerHTML = `
+      <input type="number" id="mm_${k}" value="${mmVal.toFixed(mmVal<10?2:0)}" min="0" step="${stepFor(k)}" oninput="mmChanged('${k}')">
+      <div class="range-hint" id="hint_${k}">${hintText(k,'mm')}</div>
+      <div class="range-fi"   id="hfi_${k}">${hintText(k,'fi')}</div>`;
+    if(unitCell) unitCell.textContent = 'mm';
+  } else {
+    // Show feet + inch inputs
+    const ft = Math.floor(mmVal / MM_PER_FOOT);
+    const remIn = (mmVal - ft*MM_PER_FOOT) / MM_PER_INCH;
+    const whIn  = Math.floor(remIn);
+    const fracIn= remIn - whIn;
+    // round frac to 2 decimal places for the inch box
+    const inchVal = +(whIn + fracIn).toFixed(3);
+
+    cell.innerHTML = `
+      <div class="fi-wrap">
+        <input type="number" id="ft_${k}" value="${ft}" min="0" step="1" oninput="fiChanged('${k}')" style="flex:0.8;">
+        <span>ft</span>
+        <input type="number" id="in_${k}" value="${inchVal}" min="0" max="11.99" step="0.125" oninput="fiChanged('${k}')" style="flex:1.1;">
+        <span>in</span>
+      </div>
+      <input type="hidden" id="mm_${k}" value="${mmVal.toFixed(2)}">
+      <div class="range-hint" id="hint_${k}">${hintText(k,'mm')}</div>
+      <div class="range-fi"   id="hfi_${k}">${hintText(k,'fi')}</div>`;
+    if(unitCell) unitCell.textContent = 'ft–in';
+  }
+}
+
+function stepFor(k){
+  const s={storeyH:50,slabThk:10,riser:5,tread:5,nosing:5,flightW:50,landW:50,midWall:10,headroom:50};
+  return s[k]||1;
+}
+
+// When mm input changes → update hidden fi fields if needed, then recalc
+function mmChanged(k){
+  go();
+}
+
+// When ft/in inputs change → sync to hidden mm field, then recalc
+function fiChanged(k){
+  const ft = document.getElementById('ft_'+k);
+  const inch= document.getElementById('in_'+k);
+  const mmField = document.getElementById('mm_'+k);
+  if(ft && inch && mmField){
+    mmField.value = fiToMM(ft.value, inch.value).toFixed(2);
+  }
+  go();
+}
+
+function getVal(k){
+  return parseFloat(document.getElementById('mm_'+k).value)||0;
+}
+
+/* ═══════════════════════════════════════════════
+   NBC CODE LIMITS
+═══════════════════════════════════════════════ */
+const NBC={
+  res:{rMin:100,rMax:175,tMin:250,tMax:300,fwMin:1000,hrMin:2000,pitchMax:42,label:'Residential'},
+  pub:{rMin:100,rMax:150,tMin:270,tMax:350,fwMin:1500,hrMin:2200,pitchMax:38,label:'Public/Commercial'}
+};
+
+function hintText(k, unit){
+  const occ = document.getElementById('occ') ? document.getElementById('occ').value : 'res';
+  const c = NBC[occ];
+  const hints = {
+    storeyH:{ mm:'NBC: 2700–4500 mm', fi:'NBC: 8′-10″ – 14′-9″' },
+    riser:  { mm:`NBC ${c.label}: ${c.rMin}–${c.rMax} mm`, fi:`NBC ${c.label}: ${mmToFI(c.rMin,false)}–${mmToFI(c.rMax,false)}` },
+    tread:  { mm:`NBC ${c.label}: ${c.tMin}–${c.tMax} mm`, fi:`NBC ${c.label}: ${mmToFI(c.tMin,false)}–${mmToFI(c.tMax,false)}` },
+    flightW:{ mm:`NBC ${c.label}: Min ${c.fwMin} mm`, fi:`NBC ${c.label}: Min ${mmToFI(c.fwMin,false)}` },
+    headroom:{mm:`NBC ${c.label}: Min ${c.hrMin} mm`, fi:`NBC ${c.label}: Min ${mmToFI(c.hrMin,false)}`},
+  };
+  return (hints[k] && hints[k][unit]) || '';
+}
+
+function updateHints(){
+  PARAMS.forEach(k=>{
+    const h=document.getElementById('hint_'+k);
+    const hf=document.getElementById('hfi_'+k);
+    if(h) h.textContent=hintText(k,'mm');
+    if(hf) hf.textContent=hintText(k,'fi');
+  });
+}
+
+/* ═══════════════════════════════════════════════
+   MAIN CALCULATE
+═══════════════════════════════════════════════ */
+function ff(n,d=1){ return isNaN(n)?'—':(+n).toFixed(d); }
+function sv(id,val){ const e=document.getElementById(id); if(e) e.textContent=val; }
+
+function go(){
+  const occ=document.getElementById('occ').value, code=NBC[occ];
+  const storeyH=getVal('storeyH'), slabThk=getVal('slabThk'),
+        riserIn=getVal('riser'),   tread=getVal('tread'),
+        nosing=getVal('nosing'),   flightW=getVal('flightW'),
+        landW=getVal('landW'),     midWall=getVal('midWall'),
+        headroom=getVal('headroom');
+
+  const netRise=storeyH-slabThk;
+  let nR=Math.round(netRise/riserIn);
+  if(nR<4)nR=4;
+  if(nR%2!==0)nR++;
+  const actR=netRise/nR, rpf=nR/2, tpf=rpf-1;
+  const going=tpf*tread;
+  const comfort=2*actR+tread;
+  const angle=Math.atan(actR/tread)*180/Math.PI;
+  const wellW=flightW+midWall+flightW;
+  const wellL=going+landW;
+
+  // Errors / warnings
+  const errs=[],wrns=[];
+  if(storeyH<2700||storeyH>4500) errs.push(`Storey height ${ff(storeyH,0)} mm (${mmToFI(storeyH)}) outside NBC 2700–4500 mm.`);
+  if(actR<code.rMin) wrns.push(`Riser ${ff(actR,1)} mm (${mmToFI(actR)}) below NBC min ${code.rMin} mm.`);
+  if(actR>code.rMax) errs.push(`Riser ${ff(actR,1)} mm (${mmToFI(actR)}) exceeds NBC max ${code.rMax} mm.`);
+  if(tread<code.tMin||tread>code.tMax) errs.push(`Tread ${tread} mm (${mmToFI(tread)}) outside NBC ${code.tMin}–${code.tMax} mm.`);
+  if(comfort<600||comfort>640) wrns.push(`2R+T = ${ff(comfort,0)} mm (${mmToFI(comfort)}). Ideal: 600–640 mm.`);
+  if(angle>code.pitchMax) wrns.push(`Pitch ${ff(angle,1)}° exceeds NBC max ${code.pitchMax}°.`);
+  if(angle<25) wrns.push(`Pitch ${ff(angle,1)}° below 25° (too flat).`);
+  if(flightW<code.fwMin) errs.push(`Flight width ${flightW} mm (${mmToFI(flightW)}) below NBC min ${code.fwMin} mm.`);
+  if(headroom<code.hrMin) errs.push(`Headroom ${headroom} mm (${mmToFI(headroom)}) below NBC min ${code.hrMin} mm.`);
+  if(landW<flightW) wrns.push(`Landing ${landW} mm (${mmToFI(landW)}) < flight width ${flightW} mm.`);
+
+  document.getElementById('errBox').style.display=errs.length?'':'none';
+  document.getElementById('wrnBox').style.display=wrns.length?'':'none';
+  document.getElementById('errBox').innerHTML=errs.map(e=>'⛔ '+e).join('<br>');
+  document.getElementById('wrnBox').innerHTML=wrns.map(w=>'⚠️ '+w).join('<br>');
+
+  // Results — mm column
+  sv('rNetRise_mm', ff(netRise,0)+' mm');
+  sv('rNR_mm',      nR+' nos.');
+  sv('rRpF_mm',     rpf+' nos.');
+  sv('rTpF_mm',     tpf+' nos.');
+  sv('rActR_mm',    ff(actR,1)+' mm');
+  sv('rT_mm',       tread+' mm');
+  sv('rComfort_mm', ff(comfort,0)+' mm');
+  sv('rGoing_mm',   ff(going,0)+' mm');
+  sv('rAngle_mm',   ff(angle,1)+'°');
+  sv('rWW_mm',      ff(wellW,0)+' mm');
+  sv('rWL_mm',      ff(wellL,0)+' mm');
+  sv('rArea_mm',    ff(wellW*wellL/1e6,2)+' m²');
+
+  // Results — ft-in column
+  sv('rNetRise_fi', mmToFI(netRise));
+  sv('rActR_fi',    mmToFI(actR));
+  sv('rT_fi',       mmToFI(tread));
+  sv('rComfort_fi', mmToFI(comfort));
+  sv('rGoing_fi',   mmToFI(going));
+  sv('rWW_fi',      mmToFI(wellW));
+  sv('rWL_fi',      mmToFI(wellL));
+  sv('rArea_fi',    ff(wellW*wellL/92903.04,2)+' ft²');
+  // Angle/count rows — just label
+  sv('rAngle_fi',   '[25°–42°]');
+  sv('rNR_fi',  ''); sv('rRpF_fi',''); sv('rTpF_fi','');
+
+  buildComp(actR,tread,comfort,angle,flightW,headroom,landW,nR,code);
+
+  const D={storeyH,slabThk,netRise,nR,rpf,tpf,actR,tread,nosing,
+           flightW,landW,midWall,headroom,going,wellW,wellL,comfort,angle};
+  drawPlan(D);
+}
+
+/* ═══════════════════════════════════════════════
+   COMPLIANCE TABLE
+═══════════════════════════════════════════════ */
+function buildComp(aR,T,comf,ang,fw,hr,lw,nR,code){
+  const rows=[
+    {p:'Riser (R)',      v:`${ff(aR,1)} mm / ${mmToFI(aR)}`, lim:`${code.rMin}–${code.rMax} mm`,  ok:aR>=code.rMin&&aR<=code.rMax},
+    {p:'Tread (T)',      v:`${T} mm / ${mmToFI(T)}`,          lim:`${code.tMin}–${code.tMax} mm`,  ok:T>=code.tMin&&T<=code.tMax},
+    {p:'2R+T Comfort',  v:`${ff(comf,0)} mm / ${mmToFI(comf)}`,lim:'600–640 mm (23⅝″–25¼″)',      ok:comf>=600&&comf<=640,warn:true},
+    {p:'Pitch Angle',   v:`${ff(ang,1)}°`,                    lim:`25°–${code.pitchMax}°`,         ok:ang>=25&&ang<=code.pitchMax,warn:true},
+    {p:'Flight Width',  v:`${fw} mm / ${mmToFI(fw)}`,         lim:`≥ ${code.fwMin} mm (${mmToFI(code.fwMin)})`, ok:fw>=code.fwMin},
+    {p:'Headroom',      v:`${hr} mm / ${mmToFI(hr)}`,         lim:`≥ ${code.hrMin} mm (${mmToFI(code.hrMin)})`, ok:hr>=code.hrMin},
+    {p:'Even Risers',   v:`${nR}`,                             lim:'Even (symmetric)',              ok:nR%2===0},
+    {p:'Landing Width', v:`${lw} mm / ${mmToFI(lw)}`,         lim:`≥ ${fw} mm (${mmToFI(fw)})`,   ok:lw>=fw,warn:true},
+  ];
+  const tb=document.getElementById('compBody');
+  tb.innerHTML='';
+  rows.forEach(r=>{
+    const tr=document.createElement('tr');
+    let cls,st;
+    if(r.ok){cls='compliance-row-ok';st='<span class="comp-ok">✔ OK</span>';}
+    else if(r.warn){cls='compliance-row-warn';st='<span class="comp-warn">⚠ WARN</span>';}
+    else{cls='compliance-row-fail';st='<span class="comp-fail">✘ FAIL</span>';}
+    tr.className=cls;
+    tr.innerHTML=`<td style="border:1px solid var(--border);padding:.28rem .5rem;font-weight:500;font-size:.82rem;">${r.p}</td>
+      <td style="border:1px solid var(--border);padding:.28rem .5rem;font-family:Courier New,monospace;font-weight:bold;color:var(--accent);font-size:.78rem;">${r.v}</td>
+      <td style="border:1px solid var(--border);padding:.28rem .5rem;color:var(--muted);font-size:.75rem;">${r.lim}</td>
+      <td style="border:1px solid var(--border);padding:.28rem .5rem;">${st}</td>`;
+    tb.appendChild(tr);
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PLAN DRAWING  —  CLEAN, READABLE
+   ───────────────────────────────────────────────────────────
+   Approach:
+   • Canvas is fixed 900×760 CSS px, never resized on redraw
+   • White sheet, black structural lines, very pale zone tints
+   • ALL dimension lines sit OUTSIDE the stair boundary box
+   • Fixed margins:
+       LEFT  90 px  → tread dim + riser note
+       RIGHT 110 px → 2 cols (going+landing | total length)
+       TOP    70 px → 2 rows (sub-widths | total width)
+       BOTTOM 52 px → title block
+   • Every text label has a white opaque box behind it
+   • Fixed font sizes: 11 px bold for mm, 10 px for ft-in
+   • Step number circles always 10 px radius
+═══════════════════════════════════════════════════════════ */
+function drawPlan(d){
+  const cvs = document.getElementById('planC');
+
+  // ── Fix canvas to exact CSS size (never let DPR loop inflate it) ──
+  const CW = 900, CH = 760;
+  cvs.width  = CW;
+  cvs.height = CH;
+  cvs.style.width  = CW + 'px';
+  cvs.style.height = CH + 'px';
+
+  const ctx = cvs.getContext('2d');
+  ctx.clearRect(0,0,CW,CH);
+
+  // ── White sheet ──
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, CW, CH);
+
+  // ── Margins ──
+  const ML=90, MR=110, MT=72, MB=52;
+  const drawW = CW - ML - MR;
+  const drawH = CH - MT - MB;
+
+  const { wellW, wellL, flightW:fW, midWall:mW, landW:lW,
+          going:G, tread:T, tpf, rpf } = d;
+  const f2x = fW + mW;
+
+  // ── Scale: fit staircase in draw area ──
+  const sc = Math.min(drawW/wellW, drawH/wellL);
+
+  // ── Origin: top-left of staircase box in canvas coords ──
+  const ox = ML + (drawW - wellW*sc)/2;
+  const oy = MT + (drawH - wellL*sc)/2;
+
+  // Coordinate converters
+  const S  = v  => v * sc;                       // mm → px length
+  const X  = x  => ox + x*sc;                    // mm x → canvas x
+  const Y  = y  => oy + (wellL - y)*sc;          // mm y (up) → canvas y (down)
+
+  document.getElementById('scaleLabel').textContent =
+    `1:${Math.round(1/sc*10)}`;
+
+  /* ══════════════════════════════
+     1.  PALE ZONE FILLS
+  ══════════════════════════════ */
+  ctx.fillStyle = 'rgba(200,220,255,0.50)';                       // F1 — light blue
+  ctx.fillRect(X(0),   Y(G),    S(fW), S(G));
+  ctx.fillStyle = 'rgba(255,220,195,0.50)';                       // F2 — light orange
+  ctx.fillRect(X(f2x), Y(G),    S(fW), S(G));
+  ctx.fillStyle = 'rgba(255,248,190,0.70)';                       // Landing — pale yellow
+  ctx.fillRect(X(0),   Y(wellL), S(wellW), S(lW));
+  ctx.fillStyle = 'rgba(170,170,170,0.45)';                       // Mid-wall — light grey
+  ctx.fillRect(X(fW),  Y(G),    S(mW), S(G));
+
+  // Mid-wall hatch
+  ctx.save();
+  ctx.beginPath(); ctx.rect(X(fW), Y(G), S(mW), S(G)); ctx.clip();
+  ctx.strokeStyle='rgba(90,90,90,0.25)'; ctx.lineWidth=0.8;
+  for(let k=-S(G); k<S(G)+S(mW)*3; k+=7){
+    ctx.beginPath();
+    ctx.moveTo(X(fW)+k,       Y(G));
+    ctx.lineTo(X(fW)+k+S(G),  Y(G)+S(G));
+    ctx.stroke();
+  }
+  ctx.restore();
+
+  /* ══════════════════════════════
+     2.  TREAD LINES
+  ══════════════════════════════ */
+  for(let i=1; i<=tpf; i++){
+    const yy = i*T;
+    ctx.strokeStyle='#1a55bb'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(X(0),   Y(yy)); ctx.lineTo(X(fW),    Y(yy)); ctx.stroke();
+    ctx.strokeStyle='#aa3300'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(X(f2x), Y(yy)); ctx.lineTo(X(f2x+fW),Y(yy)); ctx.stroke();
+  }
+
+  /* ══════════════════════════════
+     3.  STRUCTURAL LINES
+  ══════════════════════════════ */
+  ctx.strokeStyle='#111'; ctx.lineWidth=2.5;
+  ctx.strokeRect(X(0), Y(wellL), S(wellW), S(wellL));
+
+  ctx.strokeStyle='#333'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(X(fW),  Y(0)); ctx.lineTo(X(fW),  Y(G)); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(X(f2x), Y(0)); ctx.lineTo(X(f2x), Y(G)); ctx.stroke();
+
+  ctx.strokeStyle='#555'; ctx.lineWidth=1.2; ctx.setLineDash([6,4]);
+  ctx.beginPath(); ctx.moveTo(X(0), Y(G)); ctx.lineTo(X(wellW), Y(G)); ctx.stroke();
+  ctx.setLineDash([]);
+
+  /* ══════════════════════════════
+     4.  STEP NUMBER CIRCLES
+  ══════════════════════════════ */
+  const NR=10, NF=11;   // radius px, font px — fixed, always readable
+
+  function stepBubble(bx, by, num, tc, rc){
+    ctx.save();
+    ctx.fillStyle='#fff'; ctx.strokeStyle=rc; ctx.lineWidth=1.4;
+    ctx.beginPath(); ctx.arc(bx,by,NR,0,Math.PI*2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle=tc; ctx.font=`bold ${NF}px Arial`;
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(num, bx, by+0.5);
+    ctx.restore();
+  }
+
+  for(let i=0; i<rpf; i++)
+    stepBubble(X(fW/2),      Y((i+0.5)*T),        i+1,    '#0a2a6a','#1a55bb');
+  for(let i=0; i<rpf; i++)
+    stepBubble(X(f2x+fW/2),  Y((rpf-1-i+0.5)*T),  rpf+i+1,'#5a1000','#aa3300');
+
+  /* ══════════════════════════════
+     5.  ZONE LABELS  (white box behind every one)
+  ══════════════════════════════ */
+  function label(x, y, txt, fs, col, bold){
+    ctx.save();
+    ctx.font = (bold?'bold ':'')+fs+'px Arial';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    const tw = ctx.measureText(txt).width;
+    ctx.fillStyle='rgba(255,255,255,0.93)';
+    ctx.fillRect(x-tw/2-4, y-fs*0.7, tw+8, fs*1.4);
+    ctx.fillStyle=col; ctx.fillText(txt,x,y);
+    ctx.restore();
+  }
+
+  label(X(fW/2),      Y(G*0.86), 'FLIGHT 1', 11, '#0a2a6a', true);
+  label(X(f2x+fW/2),  Y(G*0.86), 'FLIGHT 2', 11, '#5a1000', true);
+
+  // Landing — centred, two lines
+  const lcy = Y(G + lW/2);
+  label(X(wellW/2), lcy-9,  'LANDING',                        12, '#4a3800', true);
+  label(X(wellW/2), lcy+9,  Math.round(lW)+' mm  ('+mmToFI(lW)+')', 9,  '#4a3800', false);
+
+  // Mid-wall (rotated, only if wide enough to fit text)
+  if(S(mW) > 32){
+    ctx.save();
+    ctx.translate(X(fW)+S(mW)/2, Y(G/2));
+    ctx.rotate(-Math.PI/2);
+    label(0,0, 'WALL '+Math.round(mW)+' mm', 9, '#444', false);
+    ctx.restore();
+  }
+
+  // UP / DN travel arrows + labels
+  const arHalf = Math.min(S(G)*0.18, 30);
+  const arCy   = (Y(0)+Y(G))/2;
+
+  travelArrow(ctx, X(fW/2),     arCy+arHalf, X(fW/2),     arCy-arHalf, '#117733');
+  label(X(fW/2),     Y(G*0.11), 'UP', 11, '#117733', true);
+
+  travelArrow(ctx, X(f2x+fW/2), arCy-arHalf, X(f2x+fW/2), arCy+arHalf, '#883010');
+  label(X(f2x+fW/2), Y(G*0.89), 'DN', 11, '#883010', true);
+
+  // Floor labels just outside boundary
+  label(X(fW/2),    Y(0)-12, '▲  GF ENTRY',    9, '#555', false);
+  label(X(wellW/2), Y(wellL)+14, '▼  UPPER FLOOR', 9, '#555', false);
+
+  /* ══════════════════════════════
+     6.  DIMENSION LINES
+     ─────────────────────────────
+     LAYOUT (all outside the box):
+
+     TOP  row-A  y = Y(wellL)-28   F1 width | wall width | F2 width
+     TOP  row-B  y = Y(wellL)-56   TOTAL WELL WIDTH
+
+     RIGHT col-A  x = X(wellW)+30   GOING / LANDING (sub)
+     RIGHT col-B  x = X(wellW)+68   TOTAL WELL LENGTH
+
+     LEFT  col-A  x = X(0)-32      TREAD T (one step)
+     LEFT  text   x = X(0)-70      riser note (rotated text, no dim line)
+  ══════════════════════════════ */
+
+  const BLU='#1a4a9a', ORG='#7a2800', YEL='#4a3800', RED='#990000', GRY='#444';
+
+  // TOP ROW A
+  dimH(ctx, X(0),    Y(wellL)-28, S(fW),   fW,    BLU, null);
+  if(mW>0) dimH(ctx, X(fW),   Y(wellL)-28, S(mW), mW,  GRY,  null);
+  dimH(ctx, X(f2x),  Y(wellL)-28, S(fW),   fW,    BLU, null);
+
+  // TOP ROW B
+  dimH(ctx, X(0),    Y(wellL)-58, S(wellW), wellW, RED, 'WELL WIDTH');
+
+  // RIGHT COL A
+  dimV(ctx, X(wellW)+30, Y(wellL), S(G),   G,    BLU, 'GOING');
+  dimV(ctx, X(wellW)+30, Y(G),     S(lW),  lW,   YEL, 'LANDING');
+
+  // RIGHT COL B
+  dimV(ctx, X(wellW)+72, Y(wellL), S(wellL), wellL, RED, 'WELL LEN.');
+
+  // LEFT COL A — one tread
+  if(tpf>=1)
+    dimV(ctx, X(0)-32, Y(T), S(T), T, BLU, 'TREAD');
+
+  // LEFT riser note (plain rotated text, no dim line — just annotation)
+  ctx.save();
+  ctx.translate(X(0)-72, (Y(0)+Y(G))/2);
+  ctx.rotate(-Math.PI/2);
+  label(0, 0,
+    rpf+' RISERS  R = '+(+d.actR.toFixed(1))+' mm  ('+mmToFI(d.actR)+')',
+    9, '#333', false);
+  ctx.restore();
+
+  /* ══════════════════════════════
+     7.  TITLE BLOCK
+  ══════════════════════════════ */
+  const tbY = Y(0) + 14;
+
+  ctx.strokeStyle='#ccc'; ctx.lineWidth=0.8;
+  ctx.beginPath(); ctx.moveTo(6,tbY-6); ctx.lineTo(CW-6,tbY-6); ctx.stroke();
+  ctx.strokeStyle='#bbb'; ctx.lineWidth=0.5;
+  ctx.strokeRect(6, tbY-5, CW-12, CH-tbY+2);
+
+  ctx.fillStyle='#111'; ctx.font='bold 12px Arial';
+  ctx.textAlign='left'; ctx.textBaseline='alphabetic';
+  ctx.fillText('DOG-LEGGED STAIRCASE  —  PLAN VIEW  (NBC 205)', 14, tbY+13);
+
+  const occ=document.getElementById('occ').value;
+  ctx.fillStyle='#444'; ctx.font='10px Arial';
+  ctx.fillText(
+    (occ==='res'?'Residential':'Public/Commercial')+'  ·  '+
+    'R = '+(+d.actR.toFixed(1))+' mm ('+mmToFI(d.actR)+')  ·  '+
+    'T = '+d.tread+' mm ('+mmToFI(d.tread)+')  ·  '+
+    'Risers = '+d.nR+'  ·  '+
+    'Scale 1:'+Math.round(1/sc*10),
+    14, tbY+30);
+
+  ctx.fillStyle='#888'; ctx.font='9px Arial'; ctx.textAlign='right';
+  ctx.fillText('All dims in mm  ·  ft-in shown in ( )', CW-12, tbY+30);
+}
+
+/* ═══════════════════════════════════════════════
+   DRAWING HELPERS
+═══════════════════════════════════════════════ */
+
+/* Travel arrow (UP / DN) */
+function travelArrow(ctx, x1, y1, x2, y2, col){
+  ctx.save();
+  ctx.strokeStyle=col; ctx.fillStyle=col; ctx.lineWidth=1.8;
+  ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+  const a=Math.atan2(y2-y1,x2-x1), s=10;
+  ctx.beginPath();
+  ctx.moveTo(x2,y2);
+  ctx.lineTo(x2-s*Math.cos(a-Math.PI/6), y2-s*Math.sin(a-Math.PI/6));
+  ctx.lineTo(x2-s*Math.cos(a+Math.PI/6), y2-s*Math.sin(a+Math.PI/6));
+  ctx.closePath(); ctx.fill();
+  ctx.restore();
+}
+
+/* Small filled arrowhead at (x1,y1) pointing toward (x2,y2) */
+function dimArrow(ctx, x1, y1, x2, y2, col){
+  ctx.save(); ctx.fillStyle=col;
+  const a=Math.atan2(y2-y1,x2-x1), s=6;
+  ctx.beginPath();
+  ctx.moveTo(x1,y1);
+  ctx.lineTo(x1+s*Math.cos(a+Math.PI*5/6), y1+s*Math.sin(a+Math.PI*5/6));
+  ctx.lineTo(x1+s*Math.cos(a-Math.PI*5/6), y1+s*Math.sin(a-Math.PI*5/6));
+  ctx.closePath(); ctx.fill();
+  ctx.restore();
+}
+
+/* White knockout box + centred text */
+function txtBox(ctx, x, y, txt, fs, col, bold){
+  ctx.save();
+  ctx.font=(bold?'bold ':'')+fs+'px Arial';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  const w=ctx.measureText(txt).width;
+  ctx.fillStyle='rgba(255,255,255,0.96)';
+  ctx.fillRect(x-w/2-3, y-fs*0.68, w+6, fs*1.36);
+  ctx.fillStyle=col; ctx.fillText(txt,x,y);
+  ctx.restore();
+}
+
+/* ── HORIZONTAL DIM LINE ───────────────────────────────
+   x1,y  : left tip of dim line (canvas coords)
+   wPx   : pixel width
+   mmVal : mm value to display
+   col   : colour
+   prefix: optional text prefix (e.g. 'WELL WIDTH')
+   Labels sit ABOVE the dim line:
+     row-1 (closer):  ft-in  in blue
+     row-2 (further): mm bold in col
+*/
+function dimH(ctx, x1, y, wPx, mmVal, col, prefix){
+  ctx.save();
+  const x2 = x1+wPx, mid=(x1+x2)/2;
+
+  // Extension ticks (run from building edge down through dim line)
+  ctx.strokeStyle='#aaa'; ctx.lineWidth=0.7;
+  ctx.beginPath(); ctx.moveTo(x1, y-10); ctx.lineTo(x1, y+8); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x2, y-10); ctx.lineTo(x2, y+8); ctx.stroke();
+
+  // Dim line
+  ctx.strokeStyle=col; ctx.lineWidth=1.1;
+  ctx.beginPath(); ctx.moveTo(x1,y); ctx.lineTo(x2,y); ctx.stroke();
+
+  // Arrowheads (inward)
+  dimArrow(ctx, x1, y, x2, y, col);
+  dimArrow(ctx, x2, y, x1, y, col);
+
+  // Labels (white box behind each)
+  const mmTxt = prefix
+    ? prefix+'  =  '+Math.round(mmVal)+' mm'
+    : Math.round(mmVal)+' mm';
+  const fiTxt = mmToFI(mmVal);
+
+  // ft-in (row closer to dim line)
+  txtBox(ctx, mid, y-15, fiTxt,  10, '#1a4a9a', false);
+  // mm   (row further up)
+  txtBox(ctx, mid, y-30, mmTxt,  10, col,        true);
+
+  ctx.restore();
+}
+
+/* ── VERTICAL DIM LINE ─────────────────────────────────
+   x       : canvas x of dim line
+   y1      : top canvas coord
+   hPx     : pixel height (positive = downward)
+   mmVal   : mm value
+   col     : colour
+   prefix  : optional prefix
+   Labels sit to the RIGHT of the dim line (rotated –90°):
+     closer row:  ft-in  in blue
+     further row: mm bold in col
+*/
+function dimV(ctx, x, y1, hPx, mmVal, col, prefix){
+  ctx.save();
+  const y2=y1+hPx, mid=(y1+y2)/2;
+
+  // Extension ticks
+  ctx.strokeStyle='#aaa'; ctx.lineWidth=0.7;
+  ctx.beginPath(); ctx.moveTo(x-8,  y1); ctx.lineTo(x+10, y1); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x-8,  y2); ctx.lineTo(x+10, y2); ctx.stroke();
+
+  // Dim line
+  ctx.strokeStyle=col; ctx.lineWidth=1.1;
+  ctx.beginPath(); ctx.moveTo(x,y1); ctx.lineTo(x,y2); ctx.stroke();
+
+  // Arrowheads
+  dimArrow(ctx, x, y1, x, y2, col);
+  dimArrow(ctx, x, y2, x, y1, col);
+
+  // Rotated labels — use separate save/restore so no state leaks
+  const mmTxt = prefix
+    ? prefix+' = '+Math.round(mmVal)+' mm'
+    : Math.round(mmVal)+' mm';
+  const fiTxt = mmToFI(mmVal);
+
+  // ft-in label (closer to dim line — at x+14)
+  ctx.save();
+  ctx.translate(x+15, mid); ctx.rotate(-Math.PI/2);
+  txtBox(ctx, 0, 0, fiTxt, 10, '#1a4a9a', false);
+  ctx.restore();
+
+  // mm label (further from dim line — at x+30)
+  ctx.save();
+  ctx.translate(x+32, mid); ctx.rotate(-Math.PI/2);
+  txtBox(ctx, 0, 0, mmTxt, 10, col, true);
+  ctx.restore();
+
+  ctx.restore();
+}
+
+function toggleFml(){
+  const b=document.getElementById('fmlBox'),btn=document.getElementById('fmlBtn');
+  const vis=b.style.display!=='none';
+  b.style.display=vis?'none':'block';
+  btn.textContent=vis?'▶ Show Formulas':'▼ Hide Formulas';
+}
+
+function doReset(){
+  Object.entries(DEFAULTS_MM).forEach(([k,v])=>{
+    const el=document.getElementById('mm_'+k);
+    if(el) el.value=v;
+  });
+  document.getElementById('occ').value='res';
+  // Re-render cells in current mode
+  PARAMS.forEach(k=>renderInputCell(k));
+  updateHints(); go();
+}
+
+window.onload=function(){
+  PARAMS.forEach(k=>renderInputCell(k));
+  updateHints(); go();
+};
+</script>
+</body>
+</html>
