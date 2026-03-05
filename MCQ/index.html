@@ -1,1 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MCQ Quiz — BY Er. Shankar Bhujel</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --surface: #f5f5f5;
+      --surface2: #e8e8e8;
+      --border: #bdbdbd;
+      --border-dark: #9e9e9e;
+      --accent: #1565C0;
+      --output: #2E7D32;
+      --text: #212121;
+      --muted: #616161;
+      --header-bg: #1565C0;
+      --header-text: #ffffff;
+      --warn: #b71c1c;
+      --correct: #2E7D32;
+      --wrong: #b71c1c;
+      --correct-bg: #e8f5e9;
+      --wrong-bg: #ffebee;
+      --option-hover: #e3f2fd;
+      --selected-border: #1565C0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, Helvetica, sans-serif; background: var(--bg); color: var(--text); font-size: 14px; }
 
+    /* HEADER */
+    .site-header { background: var(--header-bg); color: var(--header-text); padding: 0.6rem 1.5rem; }
+    .header-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+    .header-by { font-size: 1rem; font-weight: bold; letter-spacing: 0.03em; }
+    .header-tool-name { font-size: 0.82rem; opacity: 0.85; }
+
+    /* NAV */
+    .main-nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0.45rem 1.5rem; font-size: 0.82rem; }
+    .main-nav a { color: var(--accent); text-decoration: none; margin-right: 1.5rem; }
+    .main-nav a:hover { text-decoration: underline; }
+
+    /* TITLE */
+    .page-title { max-width: 900px; margin: 1rem auto 0.75rem; padding: 0 1.5rem 0.6rem; border-bottom: 2px solid var(--accent); }
+    .page-title h1 { font-size: 1.25rem; color: var(--accent); margin-bottom: 0.2rem; }
+    .page-title p  { font-size: 0.82rem; color: var(--muted); }
+
+    /* WRAPPER */
+    .wrapper { max-width: 900px; margin: 0 auto; padding: 0 1.5rem 2rem; }
+
+    /* LOAD PANEL */
+    .load-panel { background: var(--surface); border: 1px solid var(--border); padding: 1.2rem 1.5rem; margin-top: 1rem; }
+    .load-panel h2 { font-size: 0.9rem; color: var(--accent); font-weight: bold; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.8rem; }
+    .load-row { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; margin-bottom: 0.6rem; }
+    .load-row input[type="text"] {
+      flex: 1; min-width: 200px; border: 1px solid var(--border-dark);
+      padding: 0.35rem 0.6rem; font-family: Arial, sans-serif; font-size: 0.88rem;
+      background: #fff; color: var(--text); outline: none;
+    }
+    .load-row input[type="text"]:focus { border-color: var(--accent); outline: 1px solid var(--accent); }
+    .load-row input[type="file"] { font-size: 0.82rem; color: var(--muted); }
+    .btn { background: var(--accent); color: #fff; border: none; padding: 0.42rem 1.4rem; font-size: 0.88rem; font-family: Arial, sans-serif; cursor: pointer; font-weight: bold; }
+    .btn:hover { background: #0d47a1; }
+    .btn-grey { background: var(--surface2); color: var(--text); border: 1px solid var(--border-dark); }
+    .btn-grey:hover { background: #ddd; }
+    .btn-green { background: var(--output); }
+    .btn-green:hover { background: #1b5e20; }
+    .btn-red { background: var(--warn); }
+    .btn-red:hover { background: #7f0000; }
+    .load-hint { font-size: 0.78rem; color: var(--muted); margin-top: 0.3rem; }
+    #loadStatus { font-size: 0.82rem; margin-top: 0.5rem; padding: 0.3rem 0.6rem; display: none; }
+    .status-ok  { background: #e8f5e9; color: #1b5e20; border: 1px solid #a5d6a7; }
+    .status-err { background: #ffebee; color: var(--warn); border: 1px solid #ef9a9a; }
+
+    /* QUIZ META */
+    .quiz-meta { display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap; margin: 1rem 0 0.6rem; }
+    .meta-badge { background: var(--surface2); border: 1px solid var(--border); padding: 0.25rem 0.75rem; font-size: 0.8rem; color: var(--muted); }
+    .meta-badge span { font-weight: bold; color: var(--text); }
+
+    /* PROGRESS BAR */
+    .progress-wrap { margin-bottom: 1rem; }
+    .progress-label { font-size: 0.78rem; color: var(--muted); margin-bottom: 0.25rem; display: flex; justify-content: space-between; }
+    .progress-bar { width: 100%; height: 8px; background: var(--surface2); border: 1px solid var(--border); }
+    .progress-fill { height: 100%; background: var(--accent); transition: width 0.3s; width: 0%; }
+
+    /* FILTER BAR */
+    .filter-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; align-items: center; }
+    .filter-bar label { font-size: 0.82rem; color: var(--muted); }
+    .filter-bar select { border: 1px solid var(--border-dark); padding: 0.28rem 0.5rem; font-family: Arial, sans-serif; font-size: 0.82rem; background: #fff; color: var(--text); outline: none; }
+    .filter-bar select:focus { border-color: var(--accent); }
+
+    /* QUESTION CARD */
+    .question-card { border: 1px solid var(--border); margin-bottom: 1rem; }
+    .q-header { background: var(--surface2); padding: 0.45rem 0.75rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
+    .q-num { font-size: 0.75rem; font-weight: bold; color: var(--accent); text-transform: uppercase; letter-spacing: 0.05em; }
+    .q-category { font-size: 0.72rem; color: var(--muted); background: var(--surface); border: 1px solid var(--border); padding: 0.1rem 0.5rem; }
+    .q-status-badge { font-size: 0.72rem; font-weight: bold; padding: 0.1rem 0.6rem; }
+    .q-status-correct { background: #e8f5e9; color: var(--correct); border: 1px solid #a5d6a7; }
+    .q-status-wrong   { background: #ffebee; color: var(--wrong); border: 1px solid #ef9a9a; }
+    .q-status-pending { background: var(--surface); color: var(--muted); border: 1px solid var(--border); }
+
+    .q-body { padding: 0.75rem 1rem; }
+    .q-text { font-size: 0.92rem; font-weight: 500; margin-bottom: 0.75rem; line-height: 1.5; }
+
+    /* OPTIONS */
+    .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.45rem; }
+    @media (max-width: 580px) { .options-grid { grid-template-columns: 1fr; } }
+    .option-btn {
+      text-align: left; padding: 0.45rem 0.75rem; border: 1px solid var(--border);
+      background: #fff; font-family: Arial, sans-serif; font-size: 0.86rem;
+      cursor: pointer; color: var(--text); line-height: 1.4;
+      transition: background 0.1s, border-color 0.1s;
+    }
+    .option-btn:hover:not(:disabled) { background: var(--option-hover); border-color: var(--accent); }
+    .option-btn:disabled { cursor: default; }
+    .option-btn.selected  { border-color: var(--selected-border); background: #e3f2fd; }
+    .option-btn.correct   { background: var(--correct-bg); border-color: var(--correct); color: var(--correct); font-weight: bold; }
+    .option-btn.wrong     { background: var(--wrong-bg);   border-color: var(--wrong);   color: var(--wrong);   font-weight: bold; }
+    .option-btn.reveal    { background: var(--correct-bg); border-color: var(--correct); color: var(--correct); }
+
+    /* EXPLANATION */
+    .explanation { margin-top: 0.65rem; background: #fffde7; border: 1px solid #f9a825; padding: 0.5rem 0.75rem; font-size: 0.82rem; color: #5d4037; line-height: 1.6; display: none; }
+    .explanation.visible { display: block; }
+    .explanation strong { font-size: 0.78rem; }
+
+    /* RESULTS PANEL */
+    .results-panel { border: 1px solid var(--border); margin-top: 1.5rem; display: none; }
+    .results-panel.visible { display: block; }
+    .results-header { background: var(--accent); color: #fff; padding: 0.5rem 1rem; font-weight: bold; font-size: 0.9rem; }
+    .results-body { padding: 1rem; }
+    .score-row { display: flex; gap: 2rem; flex-wrap: wrap; margin-bottom: 1rem; }
+    .score-box { text-align: center; padding: 0.75rem 1.2rem; border: 1px solid var(--border); background: var(--surface); min-width: 90px; }
+    .score-box .score-num { font-size: 1.6rem; font-weight: bold; font-family: 'Courier New', monospace; color: var(--output); }
+    .score-box .score-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.1rem; }
+    .score-box.score-pct .score-num { color: var(--accent); }
+    .score-box.score-wrong .score-num { color: var(--warn); }
+    .btn-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.75rem; }
+
+    /* NOTE BOX */
+    .note-box { background: #e8f5e9; border: 1px solid #a5d6a7; padding: 0.55rem 1rem; font-size: 0.8rem; color: #1b5e20; margin-top: 0.5rem; line-height: 1.6; }
+
+    /* SAMPLE JSON */
+    .sample-box { background: #f5f5f5; border: 1px solid var(--border); padding: 0.75rem 1rem; font-size: 0.78rem; font-family: 'Courier New', monospace; color: var(--text); margin-top: 0.5rem; white-space: pre; overflow-x: auto; line-height: 1.6; display: none; }
+
+    /* FOOTER */
+    .site-footer { max-width: 900px; margin: 2rem auto 0; padding: 0.75rem 1.5rem; border-top: 1px solid var(--border); font-size: 0.76rem; color: var(--muted); }
+    .site-footer a { color: var(--accent); text-decoration: none; }
+    .site-footer a:hover { text-decoration: underline; }
+
+    #quizArea { display: none; }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <span class="header-by">BY Er. Shankar Bhujel</span>
+    <span class="header-tool-name">MCQ Quiz Platform</span>
+  </div>
+</header>
+
+<nav class="main-nav">
+  <a href="../index.html">← Portfolio</a>
+  <a href="index.html">Quiz Home</a>
+</nav>
+
+<div class="page-title">
+  <h1>MCQ Quiz Platform</h1>
+  <p>Load any JSON question bank — no editing of this file required. Just drop in a new questions.json.</p>
+</div>
+
+<div class="wrapper">
+
+  <!-- LOAD PANEL -->
+  <div class="load-panel">
+    <h2>1. Load Question Bank</h2>
+
+    <div class="load-row">
+      <input type="text" id="jsonUrl" placeholder="Enter raw GitHub URL to questions.json  e.g. https://raw.githubusercontent.com/you/repo/main/questions.json" />
+      <button class="btn" onclick="loadFromUrl()">Load from URL</button>
+    </div>
+
+    <div class="load-row">
+      <input type="file" id="jsonFile" accept=".json" onchange="loadFromFile(this)" />
+      <button class="btn btn-grey" onclick="loadSample()">Load Sample Questions</button>
+    </div>
+
+    <div class="load-hint">
+      ℹ️ Tip: Upload <strong>questions.json</strong> to your GitHub repo and paste the <em>Raw</em> URL above, OR use the file picker to test locally.
+      <a href="#" onclick="toggleSample(); return false;">Show JSON format ▶</a>
+    </div>
+    <pre class="sample-box" id="sampleBox">[
+  {
+    "id": 1,
+    "question": "What is the unit of stress?",
+    "options": ["Newton", "Pascal", "Joule", "Watt"],
+    "correct": "Pascal",
+    "explanation": "Stress = Force / Area. Its SI unit is Pascal (Pa) = N/m².",
+    "category": "Mechanics"
+  },
+  {
+    "id": 2,
+    "question": "Which code governs RCC design in Nepal/India?",
+    "options": ["IS 456", "IS 800", "IS 875", "IS 1893"],
+    "correct": "IS 456",
+    "explanation": "IS 456:2000 is the code of practice for plain and reinforced concrete.",
+    "category": "Structural"
+  }
+]</pre>
+
+    <div id="loadStatus"></div>
+  </div>
+
+  <!-- QUIZ AREA -->
+  <div id="quizArea">
+
+    <div class="quiz-meta">
+      <div class="meta-badge">Total: <span id="metaTotal">0</span> Qs</div>
+      <div class="meta-badge">Answered: <span id="metaAnswered">0</span></div>
+      <div class="meta-badge">Correct: <span id="metaCorrect" style="color:var(--correct)">0</span></div>
+      <div class="meta-badge">Wrong: <span id="metaWrong" style="color:var(--warn)">0</span></div>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span>Progress</span>
+        <span id="progressText">0 / 0</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+
+    <div class="filter-bar">
+      <label>Filter by Category:</label>
+      <select id="categoryFilter" onchange="renderQuestions()">
+        <option value="all">All Categories</option>
+      </select>
+      <label style="margin-left:1rem;">Show:</label>
+      <select id="showFilter" onchange="renderQuestions()">
+        <option value="all">All Questions</option>
+        <option value="unanswered">Unanswered Only</option>
+        <option value="wrong">Wrong Answers Only</option>
+        <option value="correct">Correct Answers Only</option>
+      </select>
+      <button class="btn btn-grey" style="margin-left:auto; font-size:0.8rem; padding:0.3rem 0.9rem;" onclick="resetQuiz()">Reset Quiz</button>
+    </div>
+
+    <div id="questionsContainer"></div>
+
+    <!-- RESULTS PANEL -->
+    <div class="results-panel" id="resultsPanel">
+      <div class="results-header">📊 Quiz Results</div>
+      <div class="results-body">
+        <div class="score-row">
+          <div class="score-box"><div class="score-num" id="rTotal">0</div><div class="score-label">Total</div></div>
+          <div class="score-box"><div class="score-num" id="rCorrect">0</div><div class="score-label">Correct</div></div>
+          <div class="score-box score-wrong"><div class="score-num" id="rWrong">0</div><div class="score-label">Wrong</div></div>
+          <div class="score-box score-pct"><div class="score-num" id="rPct">0%</div><div class="score-label">Score</div></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-green" onclick="exportWrongAnswers()">⬇ Export Wrong Answers (JSON)</button>
+          <button class="btn btn-grey" onclick="resetQuiz()">Restart Quiz</button>
+        </div>
+        <div class="note-box" style="margin-top:0.75rem;">
+          ✅ Wrong answers exported as a new JSON file — reload it here to practice only your mistakes.
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /quizArea -->
+
+</div><!-- /wrapper -->
+
+<footer class="site-footer">
+  BY Er. Shankar Bhujel &nbsp;·&nbsp; MCQ Quiz Platform &nbsp;·&nbsp;
+  <a href="../index.html">← Back to Portfolio</a>
+</footer>
+
+<script>
+  let allQuestions = [];
+  let userAnswers  = {};   // { id: { selected, correct } }
+
+  /* ───────── LOAD ───────── */
+  function showStatus(msg, ok) {
+    const el = document.getElementById('loadStatus');
+    el.textContent = msg;
+    el.className = ok ? 'status-ok' : 'status-err';
+    el.style.display = 'block';
+  }
+
+  function loadFromUrl() {
+    const url = document.getElementById('jsonUrl').value.trim();
+    if (!url) { showStatus('Please enter a URL.', false); return; }
+    showStatus('Loading...', true);
+    fetch(url)
+      .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(data => initQuiz(data))
+      .catch(e  => showStatus('Failed to load: ' + e.message + '. Check the URL or CORS policy.', false));
+  }
+
+  function loadFromFile(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      try {
+        const data = JSON.parse(e.target.result);
+        initQuiz(data);
+      } catch (err) {
+        showStatus('Invalid JSON: ' + err.message, false);
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function loadSample() {
+    const sample = [
+      { id:1, question:"What is the unit of stress?", options:["Newton","Pascal","Joule","Watt"], correct:"Pascal", explanation:"Stress = Force / Area. Its SI unit is Pascal (Pa) = N/m².", category:"Mechanics" },
+      { id:2, question:"Which IS code governs RCC design?", options:["IS 456","IS 800","IS 875","IS 1893"], correct:"IS 456", explanation:"IS 456:2000 is the code of practice for plain and reinforced concrete.", category:"Structural" },
+      { id:3, question:"What does 'E' represent in Hooke's Law?", options:["Elongation","Modulus of Elasticity","Eccentricity","Energy"], correct:"Modulus of Elasticity", explanation:"E = Young's Modulus (Modulus of Elasticity), σ = Eε.", category:"Mechanics" },
+      { id:4, question:"Standard compressive strength test for concrete cube is done after how many days?", options:["3","7","14","28"], correct:"28", explanation:"IS 516 specifies 28-day cube test as the standard strength criterion.", category:"Materials" },
+      { id:5, question:"What is the minimum clear cover for RCC slab (mild exposure)?", options:["15 mm","20 mm","25 mm","40 mm"], correct:"20 mm", explanation:"IS 456 Table 16 specifies 20 mm clear cover for mild exposure in slabs.", category:"Structural" },
+    ];
+    initQuiz(sample);
+  }
+
+  function initQuiz(data) {
+    if (!Array.isArray(data) || data.length === 0) {
+      showStatus('JSON must be a non-empty array of question objects.', false);
+      return;
+    }
+    // Validate minimum fields
+    for (let i = 0; i < data.length; i++) {
+      const q = data[i];
+      if (!q.question || !Array.isArray(q.options) || !q.correct) {
+        showStatus(`Question at index ${i} is missing required fields (question, options, correct).`, false);
+        return;
+      }
+    }
+    allQuestions = data.map((q, i) => ({ id: q.id ?? i + 1, ...q }));
+    userAnswers  = {};
+    showStatus(`✓ Loaded ${allQuestions.length} questions successfully.`, true);
+    populateCategoryFilter();
+    document.getElementById('quizArea').style.display = 'block';
+    renderQuestions();
+    updateMeta();
+  }
+
+  function populateCategoryFilter() {
+    const cats = [...new Set(allQuestions.map(q => q.category).filter(Boolean))];
+    const sel  = document.getElementById('categoryFilter');
+    sel.innerHTML = '<option value="all">All Categories</option>';
+    cats.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; sel.appendChild(o); });
+  }
+
+  /* ───────── RENDER ───────── */
+  function renderQuestions() {
+    const catFilter  = document.getElementById('categoryFilter').value;
+    const showFilter = document.getElementById('showFilter').value;
+
+    let filtered = allQuestions.filter(q => {
+      if (catFilter !== 'all' && q.category !== catFilter) return false;
+      if (showFilter === 'unanswered' && userAnswers[q.id]) return false;
+      if (showFilter === 'wrong'  && (!userAnswers[q.id] || userAnswers[q.id].correct)) return false;
+      if (showFilter === 'correct' && (!userAnswers[q.id] || !userAnswers[q.id].correct)) return false;
+      return true;
+    });
+
+    const container = document.getElementById('questionsContainer');
+    container.innerHTML = '';
+
+    if (filtered.length === 0) {
+      container.innerHTML = '<div class="note-box">No questions match the current filter.</div>';
+      return;
+    }
+
+    filtered.forEach((q, idx) => {
+      const answered = userAnswers[q.id];
+      const statusClass = !answered ? 'q-status-pending' : answered.correct ? 'q-status-correct' : 'q-status-wrong';
+      const statusText  = !answered ? 'Pending' : answered.correct ? '✓ Correct' : '✗ Wrong';
+
+      const card = document.createElement('div');
+      card.className = 'question-card';
+      card.id = 'qcard-' + q.id;
+
+      let optionsHtml = '<div class="options-grid">';
+      q.options.forEach(opt => {
+        let cls = 'option-btn';
+        if (answered) {
+          if (opt === q.correct) cls += ' correct';
+          else if (opt === answered.selected) cls += ' wrong';
+        }
+        optionsHtml += `<button class="${cls}" onclick="answer(${q.id}, '${escapeQuote(opt)}')" ${answered ? 'disabled' : ''}>${opt}</button>`;
+      });
+      optionsHtml += '</div>';
+
+      const expVisible = answered ? 'visible' : '';
+      const expHtml = q.explanation
+        ? `<div class="explanation ${expVisible}"><strong>Explanation:</strong> ${q.explanation}</div>`
+        : '';
+
+      card.innerHTML = `
+        <div class="q-header">
+          <span class="q-num">Q${idx + 1}</span>
+          <div style="display:flex;gap:0.5rem;align-items:center;">
+            ${q.category ? `<span class="q-category">${q.category}</span>` : ''}
+            <span class="q-status-badge ${statusClass}">${statusText}</span>
+          </div>
+        </div>
+        <div class="q-body">
+          <div class="q-text">${q.question}</div>
+          ${optionsHtml}
+          ${expHtml}
+        </div>`;
+      container.appendChild(card);
+    });
+  }
+
+  function escapeQuote(s) { return String(s).replace(/'/g, "\\'"); }
+
+  /* ───────── ANSWER ───────── */
+  function answer(id, selected) {
+    const q = allQuestions.find(q => q.id === id);
+    if (!q || userAnswers[id]) return;
+
+    const isCorrect = selected === q.correct;
+    userAnswers[id] = { selected, correct: isCorrect };
+
+    // Update buttons in-place
+    const card = document.getElementById('qcard-' + id);
+    card.querySelectorAll('.option-btn').forEach(btn => {
+      btn.disabled = true;
+      if (btn.textContent.trim() === q.correct) btn.classList.add('correct');
+      else if (btn.textContent.trim() === selected) btn.classList.add('wrong');
+    });
+    // Show explanation
+    const exp = card.querySelector('.explanation');
+    if (exp) exp.classList.add('visible');
+
+    // Update badge
+    const badge = card.querySelector('.q-status-badge');
+    badge.className = 'q-status-badge ' + (isCorrect ? 'q-status-correct' : 'q-status-wrong');
+    badge.textContent = isCorrect ? '✓ Correct' : '✗ Wrong';
+
+    updateMeta();
+    checkAllAnswered();
+  }
+
+  /* ───────── META / PROGRESS ───────── */
+  function updateMeta() {
+    const total    = allQuestions.length;
+    const answered = Object.keys(userAnswers).length;
+    const correct  = Object.values(userAnswers).filter(a => a.correct).length;
+    const wrong    = answered - correct;
+
+    document.getElementById('metaTotal').textContent    = total;
+    document.getElementById('metaAnswered').textContent = answered;
+    document.getElementById('metaCorrect').textContent  = correct;
+    document.getElementById('metaWrong').textContent    = wrong;
+
+    const pct = total ? Math.round((answered / total) * 100) : 0;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressText').textContent = `${answered} / ${total}`;
+  }
+
+  function checkAllAnswered() {
+    if (Object.keys(userAnswers).length < allQuestions.length) return;
+    const total   = allQuestions.length;
+    const correct = Object.values(userAnswers).filter(a => a.correct).length;
+    const wrong   = total - correct;
+    const pct     = Math.round((correct / total) * 100);
+
+    document.getElementById('rTotal').textContent   = total;
+    document.getElementById('rCorrect').textContent = correct;
+    document.getElementById('rWrong').textContent   = wrong;
+    document.getElementById('rPct').textContent     = pct + '%';
+
+    const panel = document.getElementById('resultsPanel');
+    panel.classList.add('visible');
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  /* ───────── EXPORT WRONG ───────── */
+  function exportWrongAnswers() {
+    const wrongQs = allQuestions.filter(q => userAnswers[q.id] && !userAnswers[q.id].correct);
+    if (wrongQs.length === 0) { alert('No wrong answers to export!'); return; }
+    const blob = new Blob([JSON.stringify(wrongQs, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'wrong_answers.json';
+    a.click();
+  }
+
+  /* ───────── RESET ───────── */
+  function resetQuiz() {
+    userAnswers = {};
+    document.getElementById('categoryFilter').value = 'all';
+    document.getElementById('showFilter').value     = 'all';
+    document.getElementById('resultsPanel').classList.remove('visible');
+    renderQuestions();
+    updateMeta();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /* ───────── SAMPLE TOGGLE ───────── */
+  function toggleSample() {
+    const box = document.getElementById('sampleBox');
+    box.style.display = box.style.display === 'none' ? 'block' : 'none';
+  }
+
+  // Auto-load from URL param: ?json=https://...
+  window.onload = function () {
+    const params = new URLSearchParams(window.location.search);
+    const jsonParam = params.get('json');
+    if (jsonParam) {
+      document.getElementById('jsonUrl').value = jsonParam;
+      loadFromUrl();
+    }
+  };
+</script>
+
+</body>
+</html>
