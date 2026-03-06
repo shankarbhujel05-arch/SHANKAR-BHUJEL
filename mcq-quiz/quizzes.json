@@ -1,0 +1,25 @@
+{
+  "quizzes": [
+    {
+      "id": "general_knowledge",
+      "file": "questions/general_knowledge.json",
+      "title": "General Knowledge",
+      "description": "Test your knowledge on science, geography, history and more",
+      "icon": "🌍"
+    },
+    {
+      "id": "grammar",
+      "file": "questions/grammar.json",
+      "title": "English Grammar",
+      "description": "Practice tenses, articles, clauses and more",
+      "icon": "📝"
+    },
+    {
+      "id": "vocabulary",
+      "file": "questions/vocabulary.json",
+      "title": "English Vocabulary",
+      "description": "Expand your English word power",
+      "icon": "📚"
+    }
+  ]
+}
