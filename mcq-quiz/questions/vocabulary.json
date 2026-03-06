@@ -1,0 +1,41 @@
+{
+  "title": "English Vocabulary",
+  "questions": [
+    {
+      "question": "What does 'eloquent' mean?",
+      "options": ["Clumsy", "Fluent and persuasive in speaking", "Loud and aggressive", "Shy and quiet"],
+      "answer": 1,
+      "explanation": "Eloquent describes someone who is fluent, persuasive, and expressive in speech or writing. E.g., 'She gave an eloquent speech.'"
+    },
+    {
+      "question": "Choose the synonym for 'benevolent':",
+      "options": ["Cruel", "Generous", "Stingy", "Angry"],
+      "answer": 1,
+      "explanation": "Benevolent means kind, generous, and charitable. It comes from Latin 'bene' (well) + 'volens' (wishing)."
+    },
+    {
+      "question": "What is the antonym of 'transparent'?",
+      "options": ["Clear", "Obvious", "Opaque", "Visible"],
+      "answer": 2,
+      "explanation": "Opaque is the antonym of transparent. Transparent means you can see through; opaque means you cannot."
+    },
+    {
+      "question": "What does 'meticulous' mean?",
+      "options": ["Careless", "Very careful and precise", "Fast-moving", "Extremely tall"],
+      "answer": 1,
+      "explanation": "Meticulous means showing great attention to detail; very careful and precise. E.g., 'He was meticulous in his research.'"
+    },
+    {
+      "question": "Which word means 'to make something worse'?",
+      "options": ["Alleviate", "Improve", "Exacerbate", "Resolve"],
+      "answer": 2,
+      "explanation": "Exacerbate means to make a problem, bad situation, or negative feeling worse. E.g., 'Stress can exacerbate health problems.'"
+    },
+    {
+      "question": "What does 'pragmatic' mean?",
+      "options": ["Idealistic", "Dealing with things practically", "Artistic", "Impulsive"],
+      "answer": 1,
+      "explanation": "Pragmatic means dealing with problems in a practical way rather than following fixed theories. E.g., 'a pragmatic approach to teaching.'"
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "title": "General Knowledge",
+  "questions": [
+    {
+      "question": "What is the capital city of Nepal?",
+      "options": ["Pokhara", "Kathmandu", "Lalitpur", "Bhaktapur"],
+      "answer": 1,
+      "explanation": "Kathmandu is the capital and largest city of Nepal, located in the Kathmandu Valley."
+    },
+    {
+      "question": "Which is the highest mountain in the world?",
+      "options": ["K2", "Kangchenjunga", "Mount Everest", "Lhotse"],
+      "answer": 2,
+      "explanation": "Mount Everest, known as Sagarmatha in Nepali, stands at 8,848.86 meters and is the highest mountain on Earth."
+    },
+    {
+      "question": "How many continents are there on Earth?",
+      "options": ["5", "6", "7", "8"],
+      "answer": 2,
+      "explanation": "There are 7 continents on Earth: Asia, Africa, North America, South America, Antarctica, Europe, and Australia/Oceania."
+    },
+    {
+      "question": "What is the chemical symbol for water?",
+      "options": ["HO", "H2O", "H3O", "OH2"],
+      "answer": 1,
+      "explanation": "Water's chemical formula is H2O, meaning each molecule contains 2 hydrogen atoms and 1 oxygen atom."
+    },
+    {
+      "question": "Which planet is known as the Red Planet?",
+      "options": ["Venus", "Jupiter", "Saturn", "Mars"],
+      "answer": 3,
+      "explanation": "Mars is called the Red Planet because its surface is covered in iron oxide (rust), giving it a distinctive reddish appearance."
+    },
+    {
+      "question": "Who wrote the play 'Romeo and Juliet'?",
+      "options": ["Charles Dickens", "William Shakespeare", "Jane Austen", "Mark Twain"],
+      "answer": 1,
+      "explanation": "Romeo and Juliet was written by William Shakespeare, likely between 1594 and 1596."
+    },
+    {
+      "question": "What is the largest ocean on Earth?",
+      "options": ["Atlantic Ocean", "Indian Ocean", "Arctic Ocean", "Pacific Ocean"],
+      "answer": 3,
+      "explanation": "The Pacific Ocean is the largest and deepest ocean, covering more than 30% of Earth's surface."
+    },
+    {
+      "question": "In which year did World War II end?",
+      "options": ["1943", "1944", "1945", "1946"],
+      "answer": 2,
+      "explanation": "World War II ended in 1945 — in Europe on May 8 (V-E Day) and in the Pacific on September 2 (V-J Day)."
+    },
+    {
+      "question": "What is the speed of light approximately?",
+      "options": ["3 × 10⁵ km/s", "3 × 10⁶ km/s", "3 × 10⁴ km/s", "3 × 10³ km/s"],
+      "answer": 0,
+      "explanation": "The speed of light in a vacuum is approximately 299,792 km/s, often rounded to 3 × 10⁵ km/s."
+    },
+    {
+      "question": "Which element has the atomic number 1?",
+      "options": ["Helium", "Oxygen", "Hydrogen", "Carbon"],
+      "answer": 2,
+      "explanation": "Hydrogen has atomic number 1, meaning it has 1 proton. It is the lightest and most abundant element in the universe."
+    }
+  ]
+}

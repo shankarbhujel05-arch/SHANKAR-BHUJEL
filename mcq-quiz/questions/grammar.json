@@ -1,0 +1,53 @@
+{
+  "title": "English Grammar",
+  "questions": [
+    {
+      "question": "Choose the correct sentence:",
+      "options": ["She don't like coffee.", "She doesn't likes coffee.", "She doesn't like coffee.", "She not like coffee."],
+      "answer": 2,
+      "explanation": "In the third person singular (she/he/it), we use 'doesn't' + base form of the verb. So: 'She doesn't like coffee.'"
+    },
+    {
+      "question": "Which word is an adjective in the sentence: 'The tall man walked quickly'?",
+      "options": ["man", "walked", "tall", "quickly"],
+      "answer": 2,
+      "explanation": "'Tall' is an adjective because it describes the noun 'man'. 'Quickly' is an adverb (modifies the verb)."
+    },
+    {
+      "question": "Fill in the blank: 'I have been studying English ___ three years.'",
+      "options": ["since", "for", "from", "during"],
+      "answer": 1,
+      "explanation": "We use 'for' with a period/duration of time (three years). We use 'since' with a specific point in time (since 2021)."
+    },
+    {
+      "question": "What is the past tense of 'go'?",
+      "options": ["goed", "gone", "went", "going"],
+      "answer": 2,
+      "explanation": "'Went' is the simple past tense of 'go'. 'Gone' is the past participle, used in perfect tenses (have gone)."
+    },
+    {
+      "question": "Identify the correct passive voice: 'The letter was written by Tom.'",
+      "options": ["Active voice", "Passive voice", "Interrogative", "Imperative"],
+      "answer": 1,
+      "explanation": "Passive voice is formed with 'be + past participle'. Here, 'was written' follows this structure, and the agent 'Tom' follows 'by'."
+    },
+    {
+      "question": "Which sentence uses the Present Perfect tense correctly?",
+      "options": ["I have went to Paris.", "I went to Paris yesterday.", "I have been to Paris.", "I am going to Paris."],
+      "answer": 2,
+      "explanation": "'I have been to Paris' uses Present Perfect correctly: have + past participle (been). It expresses a past experience without specifying when."
+    },
+    {
+      "question": "Choose the correct article: '___ honest man is hard to find.'",
+      "options": ["A", "An", "The", "No article"],
+      "answer": 1,
+      "explanation": "We use 'an' before words that begin with a vowel sound. 'Honest' begins with a silent 'h', so the first sound is a vowel /ɒ/."
+    },
+    {
+      "question": "What type of clause is underlined: 'I stayed home [because it was raining]'?",
+      "options": ["Noun clause", "Adjective clause", "Adverb clause", "Independent clause"],
+      "answer": 2,
+      "explanation": "An adverb clause modifies the verb by explaining why, when, or how. 'Because it was raining' explains why I stayed home."
+    }
+  ]
+}
